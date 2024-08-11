@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Cards from './pages/Cards';
 import Header from './pages/Headerpages';
-import ManageCrards from './pages/Editpage';
+import ManageCards from './pages/Editpage';
 import flashcards from './pages/Insidecard';
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
       <Routes>
         <Route path='' element={<Header />} />
         <Route path='/cards' element={<Cards />} />
-        <Route path="/ManageCard" element={<ManageCrards />} />
+        <Route path="/ManageCard" element={<ManageCards />} />
       </Routes>
     </Router>
     </div>

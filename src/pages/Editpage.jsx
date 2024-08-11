@@ -1,10 +1,10 @@
-// src/components/FlashCardManager.js
 import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, IconButton, Card, CardContent, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
+import flashcards from './Insidecard';
 import axios from 'axios';
 
-const FlashCardManager = () => {
+const ManageCards = () => {
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -12,23 +12,29 @@ const FlashCardManager = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/flashcards')
+    axios.get('http://localhost:3000/flashcards')
       .then(response => setCards(response.data))
       .catch(error => console.error('Error fetching flashcards:', error));
   }, []);
 
   const handleOpenDialog = () => setOpenDialog(true);
-  const handleCloseDialog = () => setOpenDialog(false);
+  const handleCloseDialog = () => {
+    setNewFlashcard({ question: '', answer: '' });
+    setCurrentIndex(null);
+    setIsEditing(false);
+    setOpenDialog(false);
+  };
 
   const handleCreate = () => {
     if (newFlashcard.question && newFlashcard.answer) {
-      axios.post('http://localhost:5000/flashcards', newFlashcard)
+      axios.post('http://localhost:3000/flashcards', newFlashcard)
         .then(response => {
           setCards([...cards, response.data]);
-          setNewFlashcard({ question: '', answer: '' });
           handleCloseDialog();
         })
         .catch(error => console.error('Error creating flashcard:', error));
+    } else {
+      console.log('Question and answer must not be empty.');
     }
   };
 
@@ -41,19 +47,20 @@ const FlashCardManager = () => {
   };
 
   const handleUpdate = () => {
-    axios.put(`http://localhost:5000/flashcards/${currentIndex}`, newFlashcard)
-      .then(response => {
-        setCards(cards.map(fc => (fc.id === currentIndex ? response.data : fc)));
-        setNewFlashcard({ question: '', answer: '' });
-        setCurrentIndex(null);
-        setIsEditing(false);
-        handleCloseDialog();
-      })
-      .catch(error => console.error('Error updating flashcard:', error));
+    if (newFlashcard.question && newFlashcard.answer) {
+      axios.put(`http://localhost:3000/flashcards/${currentIndex}`, newFlashcard)
+        .then(response => {
+          setCards(cards.map(fc => (fc.id === currentIndex ? response.data : fc)));
+          handleCloseDialog();
+        })
+        .catch(error => console.error('Error updating flashcard:', error));
+    } else {
+      console.log('Question and answer must not be empty.');
+    }
   };
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:5000/flashcards/${id}`)
+    axios.delete(`http://localhost:3000/flashcards/${id}`)
       .then(() => {
         setCards(cards.filter(fc => fc.id !== id));
       })
@@ -122,4 +129,4 @@ const FlashCardManager = () => {
   );
 };
 
-export default FlashCardManager;
+export default ManageCards;
