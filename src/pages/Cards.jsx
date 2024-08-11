@@ -1,12 +1,26 @@
 // src/components/FlashCard.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button } from '@mui/material';
 import styled from 'styled-components';
-import flashcards from './Insidecard';  
 
 const Cards = () => {
   const [flipped, setFlipped] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [flashcards, setFlashcards] = useState([]);
+
+  useEffect(() => {
+    const fetchFlashcards = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/flashcards');
+        const data = await response.json();
+        setFlashcards(data);
+      } catch (error) {
+        console.error('Error fetching flashcards:', error);
+      }
+    };
+
+    fetchFlashcards();
+  }, []);
 
   const handleFlip = () => {
     setFlipped(!flipped);
@@ -15,7 +29,7 @@ const Cards = () => {
   const handleNext = () => {
     if (currentIndex < flashcards.length - 1) {
       setCurrentIndex(currentIndex + 1);
-      setFlipped(false); 
+      setFlipped(false);
     }
   };
 
@@ -28,9 +42,8 @@ const Cards = () => {
 
   const currentFlashcard = flashcards.length > 0 ? flashcards[currentIndex] : {};
 
-
   return (
-    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100vh">
+    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100vh" >
       {currentFlashcard.question ? (
         <CardContainer>
           <CardInner flipped={flipped} onClick={handleFlip}>
@@ -61,7 +74,6 @@ const CardContainer = styled.div`
   cursor: pointer;
   position: relative;
   transition: transform 0.6s ease-in-out;
-  
   &:hover {
     transform: scale(1.05);
   }

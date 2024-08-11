@@ -1,6 +1,6 @@
-CREATE DATABASE mydb;
+CREATE DATABASE tuf;
 
-USE mydb;
+USE tuf;
 
 CREATE TABLE flashcards (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -8,6 +8,3 @@ CREATE TABLE flashcards (
     answer TEXT NOT NULL,
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
-INSERT INTO flashcards (id,question,answer)
-VALUES
-(1,'why','why not');

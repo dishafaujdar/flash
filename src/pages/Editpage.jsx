@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, IconButton, Card, CardContent, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import flashcards from './Insidecard';
+import flashcard from './Insidecard';
 import axios from 'axios';
 
 const ManageCards = () => {

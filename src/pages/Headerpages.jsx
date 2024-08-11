@@ -1,4 +1,5 @@
 import { useHref, useNavigate } from 'react-router-dom';
+import '../App.css';
 
 const Header=()=> {
 
@@ -11,11 +12,14 @@ const Header=()=> {
     Navigate('/cards');
   }
     return (
+      
+      <div >
       <header>
         <h1>TUF learning page with flip cards</h1>
         <button onClick={handleCreate}>create your own</button>
         <button onClick={handlecards}>go to cards section</button>
       </header>
+      </div>
     );
   }
 

@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Cards from './pages/Cards';
 import Header from './pages/Headerpages';
 import ManageCards from './pages/Editpage';
-import flashcards from './pages/Insidecard';
+import './App.css';
 
 function App() {
   const flashcards = [
