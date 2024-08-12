@@ -5,7 +5,7 @@ import Cards from './pages/Cards';
 import Header from './pages/Headerpages';
 import ManageCards from './pages/Editpage';
 import './App.css';
-
+import './function/app'
 function App() {
   const flashcards = [
     { question: 'What is React?', answer: 'A JavaScript library for building user interfaces' },
