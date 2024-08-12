@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button } from '@mui/material';
 import styled from 'styled-components';
 import '../index.css';
-import dotenv from 'dotenv';
-dotenv.config();
+
 
 const api = "https://6xw4enbd9l.execute-api.eu-north-1.amazonaws.com/tuf-production";
 

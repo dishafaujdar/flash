@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, IconButton, Card, CardContent, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 import axios from 'axios';
-import dotenv from 'dotenv';
-dotenv.config();
+
 
 import '../index.css';
 
