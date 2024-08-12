@@ -1,0 +1,16 @@
+# serverless.yml
+
+service: express-app
+
+provider:
+  name: aws
+  runtime: nodejs20.x # Adjust based on your Node.js version
+  stage: dev
+  region: eu-north-1 # Adjust based on your preferred AWS region
+
+functions:
+  app:
+    handler: app.handler
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'

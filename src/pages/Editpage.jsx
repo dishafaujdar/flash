@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, IconButton, Card, CardContent, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 import axios from 'axios';
+import dotenv from 'dotenv';
+dotenv.config();
+
 import '../index.css';
 
+const api = process.env.API;
 
 const ManageCards = () => {
   const [cards, setCards] = useState([]);
@@ -13,7 +17,7 @@ const ManageCards = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/flashcards')
+    axios.get('${api}/flashcards')
       .then(response => setCards(response.data))
       .catch(error => console.error('Error fetching flashcards:', error));
   }, []);
@@ -28,7 +32,7 @@ const ManageCards = () => {
 
   const handleCreate = () => {
     if (newFlashcard.question && newFlashcard.answer) {
-      axios.post('http://localhost:3000/flashcards', newFlashcard)
+      axios.post('${api}/flashcards', newFlashcard)
         .then(response => {
           setCards([...cards, response.data]);
           handleCloseDialog();
@@ -49,7 +53,7 @@ const ManageCards = () => {
 
   const handleUpdate = () => {
     if (newFlashcard.question && newFlashcard.answer) {
-      axios.put(`http://localhost:3000/flashcards/${currentIndex}`, newFlashcard)
+      axios.put(`${api}/flashcards/${currentIndex}`, newFlashcard)
         .then(response => {
           setCards(cards.map(fc => (fc.id === currentIndex ? response.data : fc)));
           handleCloseDialog();
@@ -61,7 +65,7 @@ const ManageCards = () => {
   };
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:3000/flashcards/${id}`)
+    axios.delete(`${api}/flashcards/${id}`)
       .then(() => {
         setCards(cards.filter(fc => fc.id !== id));
       })

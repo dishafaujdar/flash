@@ -1,12 +1,10 @@
 import express from 'express';
 import mysql from 'mysql2/promise';
 import cors from 'cors';
+import serverless from 'serverless-http';
 import dotenv from 'dotenv';
 dotenv.config();
-
 const app = express();
-const port = process.env.PORT || 3000;
-
 app.use(express.json());
 app.use(cors());
 
@@ -85,6 +83,5 @@ app.delete('/flashcards/:id', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+module.exports.handler = serverless(app);
+
