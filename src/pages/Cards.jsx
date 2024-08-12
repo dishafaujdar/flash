@@ -3,6 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button } from '@mui/material';
 import styled from 'styled-components';
 import '../index.css';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const api = process.env.API;
 
 const Cards = () => {
   const [flipped, setFlipped] = useState(false);
@@ -12,7 +16,7 @@ const Cards = () => {
   useEffect(() => {
     const fetchFlashcards = async () => {
       try {
-        const response = await fetch('http://localhost:3000/flashcards');
+        const response = await fetch(`${api}/flashcards`);
         const data = await response.json();
         setFlashcards(data);
       } catch (error) {
