@@ -8,3 +8,6 @@ CREATE TABLE flashcards (
     answer TEXT NOT NULL,
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
+
+
+    
