@@ -7,7 +7,7 @@ dotenv.config();
 
 import '../index.css';
 
-const api = process.env.API;
+const api = "https://6xw4enbd9l.execute-api.eu-north-1.amazonaws.com/tuf-production";
 
 const ManageCards = () => {
   const [cards, setCards] = useState([]);
