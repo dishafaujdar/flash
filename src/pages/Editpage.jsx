@@ -17,7 +17,7 @@ const ManageCards = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
-    axios.get('${api}/flashcards')
+    axios.get(`${api}/flashcards`)
       .then(response => setCards(response.data))
       .catch(error => console.error('Error fetching flashcards:', error));
   }, []);
@@ -32,7 +32,7 @@ const ManageCards = () => {
 
   const handleCreate = () => {
     if (newFlashcard.question && newFlashcard.answer) {
-      axios.post('${api}/flashcards', newFlashcard)
+      axios.post(`${api}/flashcards`, newFlashcard)
         .then(response => {
           setCards([...cards, response.data]);
           handleCloseDialog();
