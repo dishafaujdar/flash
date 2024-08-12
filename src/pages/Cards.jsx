@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button } from '@mui/material';
 import styled from 'styled-components';
+import '../index.css';
 
 const Cards = () => {
   const [flipped, setFlipped] = useState(false);
@@ -43,12 +44,12 @@ const Cards = () => {
   const currentFlashcard = flashcards.length > 0 ? flashcards[currentIndex] : {};
 
   return (
-    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100vh" >
+    <Box className='main-page'  display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100vh" >
       {currentFlashcard.question ? (
         <CardContainer>
           <CardInner flipped={flipped} onClick={handleFlip}>
-            <FrontFace>{currentFlashcard.question}</FrontFace>
-            <BackFace>{currentFlashcard.answer}</BackFace>
+            <FrontFace className='card-content'>{currentFlashcard.question}</FrontFace>
+            <BackFace className='card-content'>{currentFlashcard.answer}</BackFace>
           </CardInner>
         </CardContainer>
       ) : (
@@ -56,10 +57,10 @@ const Cards = () => {
       )}
       
       <Box display="flex" justifyContent="space-between" alignItems="center" width="300px" mt={2}>
-        <Button variant="contained" onClick={handlePrev} disabled={currentIndex === 0}>
+        <Button className='button' onClick={handlePrev} disabled={currentIndex === 0}>
           Previous
         </Button>
-        <Button variant="contained" onClick={handleNext} disabled={currentIndex === flashcards.length - 1}>
+        <Button className='button' onClick={handleNext} disabled={currentIndex === flashcards.length - 1}>
           Next
         </Button>
       </Box>
@@ -68,7 +69,7 @@ const Cards = () => {
 };
 
 const CardContainer = styled.div`
-  width: 550px;
+  width: 620px;
   height: 300px;
   perspective: 1000px;
   cursor: pointer;
@@ -108,7 +109,7 @@ const FrontFace = styled(CardFace)`
 `;
 
 const BackFace = styled(CardFace)`
-  background-color: #3498db;
+  background-color: gray;
   color: #fff;
   transform: ${({ flipped }) => (flipped ? 'rotateY(0)' : 'rotateY(180deg)')};
 `;

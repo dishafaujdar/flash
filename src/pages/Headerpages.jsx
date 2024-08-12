@@ -1,5 +1,6 @@
-import { useHref, useNavigate } from 'react-router-dom';
-import '../App.css';
+import { useNavigate } from 'react-router-dom';
+import { Typography } from '@mui/material';
+import '../index.css';
 
 const Header=()=> {
 
@@ -13,11 +14,11 @@ const Header=()=> {
   }
     return (
       
-      <div >
+      <div className='header'>
       <header>
-        <h1>TUF learning page with flip cards</h1>
-        <button onClick={handleCreate}>create your own</button>
-        <button onClick={handlecards}>go to cards section</button>
+        <Typography style={{marginTop:'350px',fontSize:'larger',fontWeight:'bolder'}}><h1>TUF learning page with flip cards</h1></Typography>
+        <button className='button' onClick={handleCreate}>create your own</button>
+        <button className='button' onClick={handlecards}>go to cards section</button>
       </header>
       </div>
     );

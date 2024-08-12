@@ -3,6 +3,8 @@ import { Box, Button, TextField, IconButton, Card, CardContent, Typography, Dial
 import { Edit, Delete } from '@mui/icons-material';
 import flashcard from './Insidecard';
 import axios from 'axios';
+import '../index.css';
+
 
 const ManageCards = () => {
   const [cards, setCards] = useState([]);
@@ -68,32 +70,50 @@ const ManageCards = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" p={2}>
-      <Button variant="contained" color="primary" onClick={() => { setIsEditing(false); handleOpenDialog(); }}>
-        Add Flashcard
+    
+    <Box display="flex" flexDirection="column" alignItems="center" p={2} className='page'  >
+
+      <div className='button'>
+
+      <Button onClick={() => { setIsEditing(false); handleOpenDialog(); }}>
+        <Typography>Add Flashcard</Typography>  
       </Button>
-      <Box mt={2}>
+      </div>
+
+      <div className='cards-contanier' >
+
+      <Box mt={2} display="flex" gap="16px" padding= "16px" flex-wrap= "wrap" >
         {cards.map(fc => (
-          <Card key={fc.id} variant="outlined" sx={{ mb: 2, width: '400px', position: 'relative' }}>
-            <CardContent>
-              <Typography variant="h6">{fc.question}</Typography>
-              <Typography variant="body2" color="textSecondary">{fc.answer}</Typography>
-              <IconButton 
-                sx={{ position: 'absolute', top: 8, right: 60 }} 
-                onClick={() => handleEdit(fc.id)}
-              >
-                <Edit />
-              </IconButton>
-              <IconButton 
-                sx={{ position: 'absolute', top: 8, right: 20 }} 
-                onClick={() => handleDelete(fc.id)}
-              >
-                <Delete />
-              </IconButton>
-            </CardContent>
+          <Card key={fc.id} variant="outlined" className='card' >
+            <div>
+
+              <CardContent className='card-content'>
+              
+                <Typography variant="h6">{fc.question}</Typography>
+                <Typography variant="body2" color="textSecondary">{fc.answer}</Typography>
+                </CardContent>
+
+                <div className='icon-buttons'>
+                
+                <IconButton 
+                  sx={{ position: 'absolute', top: 8, right: 60 }} 
+                  onClick={() => handleEdit(fc.id)}
+                >
+                  <Edit />
+                </IconButton>
+                <IconButton 
+                  sx={{ position: 'absolute', top: 8, right: 20 }} 
+                  onClick={() => handleDelete(fc.id)}
+                >
+                  <Delete />
+                </IconButton>
+              </div>
+            </div>
           </Card>
+          
         ))}
       </Box>
+      </div>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>{isEditing ? 'Edit Flashcard' : 'Add Flashcard'}</DialogTitle>
