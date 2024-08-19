@@ -11,6 +11,7 @@ function App() {
     <div>
     <Router>
       <Routes>
+      <h1>Hello from Amplify</h1>
         <Route path='' element={<Header />} />
         <Route path='/cards' element={<Cards />} />
         <Route path="/ManageCard" element={<ManageCards />} />
