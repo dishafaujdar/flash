@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, IconButton, Card, CardContent, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 import axios from 'axios';
-
-
 import '../index.css';
 
-const api = "https://6xw4enbd9l.execute-api.eu-north-1.amazonaws.com/tuf-production";
 
 const ManageCards = () => {
   const [cards, setCards] = useState([]);

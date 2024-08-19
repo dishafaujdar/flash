@@ -23,8 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 .env
+.serverless
 
 # amplify
 .amplify
 amplify_outputs*
 amplifyconfiguration*
+

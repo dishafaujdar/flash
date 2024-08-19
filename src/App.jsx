@@ -5,16 +5,17 @@ import Cards from './pages/Cards';
 import Header from './pages/Headerpages';
 import ManageCards from './pages/Editpage';
 import './App.css';
-function App() {
 
+function App() {
   return (
     <div>
     <Router>
-      <Routes>
       <h1>Hello from Amplify</h1>
-        <Route path='' element={<Header />} />
+      <Routes>
+        <Route path='/' element={<Header />} />
         <Route path='/cards' element={<Cards />} />
         <Route path="/ManageCard" element={<ManageCards />} />
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </Router>
     </div>
