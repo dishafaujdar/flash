@@ -23,10 +23,10 @@ const pool = mysql.createPool({
 const getConnection = async (req, res, next) => {
   try {
     req.db = await pool.getConnection();
-    console.log('done');
+    console.log('Database connection established');
     next();
   } catch (err) {
-    res.status(500).json({ error: 'Database connection error', err });
+    res.status(500).json({ error: 'Database connection error', details: err.message });
   }
 };
 
@@ -37,7 +37,11 @@ app.get('/flashcards', async (req, res) => {
     const query = 'SELECT * FROM flashcards'; 
     const [results] = await req.db.query(query);  
     req.db.release();
-    res.json(results);
+    res.json({
+      statusCode: 200,
+      body: JSON.stringify(results),
+      headers: { 'Content-Type': 'application/json' }
+    });
   } catch (err) {
     req.db.release();
     res.status(500).json({ error: err.message });
@@ -50,7 +54,11 @@ app.post('/flashcards', async (req, res) => {
   try {
     const [result] = await req.db.query(query, [question, answer]);
     req.db.release();
-    res.json({ id: result.insertId, question, answer });
+    res.json({
+      statusCode: 200,
+      body: JSON.stringify({ id: result.insertId, question, answer }),
+      headers: { 'Content-Type': 'application/json' }
+    });
   } catch (err) {
     req.db.release();
     res.status(500).json({ error: err.message });
@@ -64,7 +72,11 @@ app.put('/flashcards/:id', async (req, res) => {
   try {
     await req.db.query(query, [question, answer, id]);
     req.db.release();
-    res.json({ id, question, answer });
+    res.json({
+      statusCode: 200,
+      body: JSON.stringify({ id, question, answer }),
+      headers: { 'Content-Type': 'application/json' }
+    });
   } catch (err) {
     req.db.release();
     res.status(500).json({ error: err.message });
@@ -77,12 +89,18 @@ app.delete('/flashcards/:id', async (req, res) => {
   try {
     await req.db.query(query, [id]);
     req.db.release();
-    res.json({ id });
-  } catch (err) {
+    res.json({
+      statusCode: 200,
+      body: JSON.stringify({ id }),
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (err) { 
     req.db.release();
     res.status(500).json({ error: err.message });
   }
 });
 
 module.exports.handler = serverless(app);
+
+
 
