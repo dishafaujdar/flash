@@ -1,66 +1,44 @@
 import express from 'express';
-import mysql from 'mysql2/promise';
 import cors from 'cors';
-import serverless from 'serverless-http';
+import prismaClient from './prisma.js';
 import dotenv from 'dotenv';
+
 dotenv.config();
+
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10000,
-  queueLimit: 0,
-});
+const PORT = 3000;
 
-const getConnection = async (req, res, next) => {
-  try {
-    req.db = await pool.getConnection();
-    console.log('Database connection established');
-    next();
-  } catch (err) {
-    res.status(500).json({ error: 'Database connection error', details: err.message });
-  }
-};
-
-app.use(getConnection);
 
 app.get('/flashcards', async (req, res) => {
   try {
-    const query = 'SELECT * FROM flashcards'; 
-    const [results] = await req.db.query(query);  
-    req.db.release();
+    const flashcards = await prismaClient.flashcard.findMany();
     res.json({
       statusCode: 200,
-      body: JSON.stringify(results),
-      headers: { 'Content-Type': 'application/json' }
+      body: JSON.stringify(flashcards),
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (err) {
-    req.db.release();
     res.status(500).json({ error: err.message });
   }
 });
 
 app.post('/flashcards', async (req, res) => {
   const { question, answer } = req.body;
-  const query = 'INSERT INTO flashcards (question, answer) VALUES (?, ?)';
   try {
-    const [result] = await req.db.query(query, [question, answer]);
-    req.db.release();
+    const flashcard = await prismaClient.flashcard.create({
+      data: { question, answer },
+    });
     res.json({
       statusCode: 200,
-      body: JSON.stringify({ id: result.insertId, question, answer }),
-      headers: { 'Content-Type': 'application/json' }
+      body: JSON.stringify(flashcard),
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (err) {
-    req.db.release();
+    console.log(err)
     res.status(500).json({ error: err.message });
   }
 });
@@ -68,39 +46,43 @@ app.post('/flashcards', async (req, res) => {
 app.put('/flashcards/:id', async (req, res) => {
   const { id } = req.params;
   const { question, answer } = req.body;
-  const query = 'UPDATE flashcards SET question = ?, answer = ? WHERE id = ?';
   try {
-    await req.db.query(query, [question, answer, id]);
-    req.db.release();
+    const flashcard = await prismaClient.flashcard.update({
+      where: { id: parseInt(id) },
+      data: { question, answer },
+    });
     res.json({
       statusCode: 200,
-      body: JSON.stringify({ id, question, answer }),
-      headers: { 'Content-Type': 'application/json' }
+      body: JSON.stringify(flashcard),
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (err) {
-    req.db.release();
+    if (err.code === 'P2025') {
+      return res.status(404).json({ error: 'Flashcard not found' });
+    }
     res.status(500).json({ error: err.message });
   }
 });
 
 app.delete('/flashcards/:id', async (req, res) => {
   const { id } = req.params;
-  const query = 'DELETE FROM flashcards WHERE id = ?';
   try {
-    await req.db.query(query, [id]);
-    req.db.release();
+    await prismaClient.flashcard.delete({
+      where: { id: parseInt(id) },
+    });
     res.json({
       statusCode: 200,
       body: JSON.stringify({ id }),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
-  } catch (err) { 
-    req.db.release();
+  } catch (err) {
+    if (err.code === 'P2025') {
+      return res.status(404).json({ error: 'Flashcard not found' });
+    }
     res.status(500).json({ error: err.message });
   }
 });
 
-module.exports.handler = serverless(app);
-
-
-
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

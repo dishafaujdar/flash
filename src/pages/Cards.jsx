@@ -1,11 +1,7 @@
-// src/components/FlashCard.js
 import React, { useState, useEffect } from 'react';
 import { Box, Button } from '@mui/material';
 import styled from 'styled-components';
 import '../index.css';
-
-
-const api = "https://6xw4enbd9l.execute-api.eu-north-1.amazonaws.com/tuf-production";
 
 const Cards = () => {
   const [flipped, setFlipped] = useState(false);
@@ -15,7 +11,10 @@ const Cards = () => {
   useEffect(() => {
     const fetchFlashcards = async () => {
       try {
-        const response = await fetch(`${api}/flashcards`);
+        const response = await fetch('http://localhost:3000/flashcards'); 
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         setFlashcards(data);
       } catch (error) {

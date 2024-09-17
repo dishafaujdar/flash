@@ -1,15 +1,28 @@
-module.exports = {
-    env: {
-      node: true,
-      es2021: true,
-    },
-    extends: 'eslint:recommended',
-    parserOptions: {
-      ecmaVersion: 12,
-      sourceType: 'module',
-    },
-    rules: {
-      // add custom rules here
-    },
-  };
-  
+{
+  "env": {
+      "node": true,
+      "commonjs": true
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+      "indent": [
+          "error",
+          "tab"
+      ],
+      "linebreak-style": [
+          "error",
+          "unix"
+      ],
+      "quotes": [
+          "error",
+          "single"
+      ],
+      "semi": [
+          "error",
+          "always"
+      ]
+  },
+  "parserOptions": {
+      "ecmaVersion": 2015
+  }
+}

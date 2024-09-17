@@ -6,17 +6,28 @@ import '../index.css';
 
 
 const ManageCards = () => {
-  const [cards, setCards] = useState([]);
+  const [Flashcard, setFlashcard] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newFlashcard, setNewFlashcard] = useState({ question: '', answer: '' });
   const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
-    axios.get(`${api}/flashcards`)
-      .then(response => setCards(response.data))
-      .catch(error => console.error('Error fetching flashcards:', error));
+    axios.get('/flashcards')  // Ensure the endpoint is correct
+      .then(response => {
+        console.log(response.data);
+        if (Array.isArray(response.data)) {
+          setFlashcard(response.data);
+        } else {
+          setFlashcard([]);  // Set to an empty array if data is not an array
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching flashcards:', error);
+        setFlashcard([]);  // Set an empty array on error to avoid breaking map
+      });
   }, []);
+  
 
   const handleOpenDialog = () => setOpenDialog(true);
   const handleCloseDialog = () => {
@@ -28,9 +39,9 @@ const ManageCards = () => {
 
   const handleCreate = () => {
     if (newFlashcard.question && newFlashcard.answer) {
-      axios.post(`${api}/flashcards`, newFlashcard)
+      axios.post('http://localhost:3000/flashcards', newFlashcard)
         .then(response => {
-          setCards([...cards, response.data]);
+          setFlashcard([...Flashcard, response.data]);
           handleCloseDialog();
         })
         .catch(error => console.error('Error creating flashcard:', error));
@@ -40,7 +51,7 @@ const ManageCards = () => {
   };
 
   const handleEdit = (id) => {
-    const flashcard = cards.find(fc => fc.id === id);
+    const flashcard = Flashcard.find(fc => fc.id === id);
     setNewFlashcard(flashcard);
     setCurrentIndex(id);
     setIsEditing(true);
@@ -49,9 +60,9 @@ const ManageCards = () => {
 
   const handleUpdate = () => {
     if (newFlashcard.question && newFlashcard.answer) {
-      axios.put(`${api}/flashcards/${currentIndex}`, newFlashcard)
+      axios.put(`http://localhost:3000/flashcards/${currentIndex}`, newFlashcard)
         .then(response => {
-          setCards(cards.map(fc => (fc.id === currentIndex ? response.data : fc)));
+          setFlashcard(Flashcard.map(fc => (fc.id === currentIndex ? response.data : fc)));
           handleCloseDialog();
         })
         .catch(error => console.error('Error updating flashcard:', error));
@@ -61,9 +72,9 @@ const ManageCards = () => {
   };
 
   const handleDelete = (id) => {
-    axios.delete(`${api}/flashcards/${id}`)
+    axios.delete(`http://localhost:3000/flashcards/${currentIndex}`)
       .then(() => {
-        setCards(cards.filter(fc => fc.id !== id));
+        setFlashcard(Flashcard.filter(fc => fc.id !== id));
       })
       .catch(error => console.error('Error deleting flashcard:', error));
   };
@@ -80,16 +91,13 @@ const ManageCards = () => {
       </div>
 
       <div className='cards-contanier' >
-
       <Box mt={2} display="flex" gap="16px" padding= "16px" flex-wrap= "wrap" >
-        {cards.map(fc => (
-          <Card key={fc.id} variant="outlined" className='card' >
-            <div>
-
-              <CardContent className='card-content'>
-              
-                <Typography variant="h6">{fc.question}</Typography>
-                <Typography variant="body2" color="textSecondary">{fc.answer}</Typography>
+      {Flashcard.map(fc => (
+            <Card key={fc.id} variant="outlined" className='card'>
+              <div>
+                <CardContent className='card-content'>
+                  <Typography variant="h6">{fc.question}</Typography>
+                  <Typography variant="body2" color="textSecondary">{fc.answer}</Typography>
                 </CardContent>
 
                 <div className='icon-buttons'>
@@ -108,8 +116,7 @@ const ManageCards = () => {
                 </IconButton>
               </div>
             </div>
-          </Card>
-          
+          </Card>        
         ))}
       </Box>
       </div>

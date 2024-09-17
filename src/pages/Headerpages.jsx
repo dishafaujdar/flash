@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import '../index.css';
+import React from 'react';
 
 const Header=()=> {
 
@@ -13,7 +14,6 @@ const Header=()=> {
     Navigate('/cards');
   }
     return (
-      
       <div className='header'>
       <header>
         <Typography style={{marginTop:'350px',fontSize:'larger',fontWeight:'bolder'}}><h1>TUF learning page with flip cards</h1></Typography>
