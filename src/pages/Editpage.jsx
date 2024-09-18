@@ -4,44 +4,42 @@ import { Edit, Delete } from '@mui/icons-material';
 import axios from 'axios';
 import '../index.css';
 
-
 const ManageCards = () => {
-  const [Flashcard, setFlashcard] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(null);
+  const [flashcards, setFlashcards] = useState([]);
+  const [currentId, setCurrentId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newFlashcard, setNewFlashcard] = useState({ question: '', answer: '' });
   const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
-    axios.get('/flashcards')  // Ensure the endpoint is correct
+    axios.get('/flashcards')
       .then(response => {
-        console.log(response.data);
         if (Array.isArray(response.data)) {
-          setFlashcard(response.data);
+          setFlashcards(response.data);
         } else {
-          setFlashcard([]);  // Set to an empty array if data is not an array
+          setFlashcards([]);
         }
       })
       .catch(error => {
         console.error('Error fetching flashcards:', error);
-        setFlashcard([]);  // Set an empty array on error to avoid breaking map
+        setFlashcards([]);
       });
   }, []);
-  
 
   const handleOpenDialog = () => setOpenDialog(true);
   const handleCloseDialog = () => {
     setNewFlashcard({ question: '', answer: '' });
-    setCurrentIndex(null);
+    setCurrentId(null);
     setIsEditing(false);
     setOpenDialog(false);
   };
 
   const handleCreate = () => {
-    if (newFlashcard.question && newFlashcard.answer) {
+    const { question, answer } = newFlashcard;
+    if (question.trim() && answer.trim()) {
       axios.post('http://localhost:3000/flashcards', newFlashcard)
         .then(response => {
-          setFlashcard([...Flashcard, response.data]);
+          setFlashcards([...flashcards, response.data]);
           handleCloseDialog();
         })
         .catch(error => console.error('Error creating flashcard:', error));
@@ -51,18 +49,21 @@ const ManageCards = () => {
   };
 
   const handleEdit = (id) => {
-    const flashcard = Flashcard.find(fc => fc.id === id);
-    setNewFlashcard(flashcard);
-    setCurrentIndex(id);
-    setIsEditing(true);
-    handleOpenDialog();
+    const flashcard = flashcards.find(fc => fc.id === id);
+    if (flashcard) {
+      setNewFlashcard({ question: flashcard.question, answer: flashcard.answer });
+      setCurrentId(id);
+      setIsEditing(true);
+      handleOpenDialog();
+    }
   };
 
   const handleUpdate = () => {
-    if (newFlashcard.question && newFlashcard.answer) {
-      axios.put(`http://localhost:3000/flashcards/${currentIndex}`, newFlashcard)
+    const { question, answer } = newFlashcard;
+    if (question.trim() && answer.trim()) {
+      axios.put(`/flashcards/${currentId}`, newFlashcard)
         .then(response => {
-          setFlashcard(Flashcard.map(fc => (fc.id === currentIndex ? response.data : fc)));
+          setFlashcards(flashcards.map(fc => (fc.id === currentId ? response.data : fc)));
           handleCloseDialog();
         })
         .catch(error => console.error('Error updating flashcard:', error));
@@ -72,53 +73,48 @@ const ManageCards = () => {
   };
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:3000/flashcards/${currentIndex}`)
+    axios.delete(`/flashcards/${id}`)
       .then(() => {
-        setFlashcard(Flashcard.filter(fc => fc.id !== id));
+        setFlashcards(flashcards.filter(fc => fc.id !== id));
       })
       .catch(error => console.error('Error deleting flashcard:', error));
   };
 
   return (
-    
-    <Box display="flex" flexDirection="column" alignItems="center" p={2} className='page'  >
-
+    <Box display="flex" flexDirection="column" alignItems="center" p={2} className='page'>
       <div className='button'>
-
-      <Button onClick={() => { setIsEditing(false); handleOpenDialog(); }}>
-        <Typography>Add Flashcard</Typography>  
-      </Button>
+        <Button onClick={() => { setIsEditing(false); handleOpenDialog(); }}>
+          <Typography>Add Flashcard</Typography>  
+        </Button>
       </div>
 
-      <div className='cards-contanier' >
-      <Box mt={2} display="flex" gap="16px" padding= "16px" flex-wrap= "wrap" >
-      {Flashcard.map(fc => (
-            <Card key={fc.id} variant="outlined" className='card'>
+      <div className='cards-container'>
+        {Array.isArray(flashcards) && flashcards.map((fc)=>
+        <Box key={fc.id} mt={2} display="flex" gap="16px" padding="16px" flexWrap="wrap">
+            <Card variant="outlined" className='card'>
               <div>
                 <CardContent className='card-content'>
                   <Typography variant="h6">{fc.question}</Typography>
                   <Typography variant="body2" color="textSecondary">{fc.answer}</Typography>
                 </CardContent>
-
                 <div className='icon-buttons'>
-                
-                <IconButton 
-                  sx={{ position: 'absolute', top: 8, right: 60 }} 
-                  onClick={() => handleEdit(fc.id)}
-                >
-                  <Edit />
-                </IconButton>
-                <IconButton 
-                  sx={{ position: 'absolute', top: 8, right: 20 }} 
-                  onClick={() => handleDelete(fc.id)}
-                >
-                  <Delete />
-                </IconButton>
+                  <IconButton 
+                    sx={{ position: 'absolute', top: 8, right: 60 }} 
+                    onClick={() => handleEdit(fc.id)}
+                    >
+                    <Edit />
+                  </IconButton>
+                  <IconButton 
+                    sx={{ position: 'absolute', top: 8, right: 20 }} 
+                    onClick={() => handleDelete(fc.id)}
+                    >
+                    <Delete />
+                  </IconButton>
+                </div>
               </div>
-            </div>
-          </Card>        
-        ))}
-      </Box>
+            </Card>
+        </Box>
+      )}
       </div>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>

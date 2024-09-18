@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import prismaClient from './prisma.js';
+import prisma from './prisma.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -15,7 +15,7 @@ const PORT = 3000;
 
 app.get('/flashcards', async (req, res) => {
   try {
-    const flashcards = await prismaClient.flashcard.findMany();
+    const flashcards = await prisma.flashcard.findMany();
     res.json({
       statusCode: 200,
       body: JSON.stringify(flashcards),
@@ -29,7 +29,7 @@ app.get('/flashcards', async (req, res) => {
 app.post('/flashcards', async (req, res) => {
   const { question, answer } = req.body;
   try {
-    const flashcard = await prismaClient.flashcard.create({
+    const flashcard = await prisma.flashcard.create({
       data: { question, answer },
     });
     res.json({
@@ -37,8 +37,9 @@ app.post('/flashcards', async (req, res) => {
       body: JSON.stringify(flashcard),
       headers: { 'Content-Type': 'application/json' },
     });
+    console.log(flashcard)
   } catch (err) {
-    console.log(err)
+    console.log("something is wrong",err)
     res.status(500).json({ error: err.message });
   }
 });
@@ -47,7 +48,7 @@ app.put('/flashcards/:id', async (req, res) => {
   const { id } = req.params;
   const { question, answer } = req.body;
   try {
-    const flashcard = await prismaClient.flashcard.update({
+    const flashcard = await prisma.flashcard.update({
       where: { id: parseInt(id) },
       data: { question, answer },
     });
@@ -67,7 +68,7 @@ app.put('/flashcards/:id', async (req, res) => {
 app.delete('/flashcards/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    await prismaClient.flashcard.delete({
+    await prisma.flashcard.delete({
       where: { id: parseInt(id) },
     });
     res.json({
